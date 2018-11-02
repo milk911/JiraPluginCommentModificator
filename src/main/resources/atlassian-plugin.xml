@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="CommentModificatorNew"/>
+  <!-- add our web resources -->
+  <web-resource key="CommentModificatorNew-resources" name="CommentModificatorNew Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="CommentModificatorNew.css" location="/css/CommentModificatorNew.css"/>
+    <resource type="download" name="CommentModificatorNew.js" location="/js/CommentModificatorNew.js"/>
+    <resource type="download" name="images/" location="/images"/>
+    <context>CommentModificatorNew</context>
+  </web-resource>
+  <!--
+  <web-item name="aliasConfig" i18n-name-key="alias-config.name" key="my-item" section="system.top.navigation.bar" weight="1000">
+    <description key="my-item.description">The myItem Plugin</description>
+    <label key="Alias config"/>
+    <link linkId="my-item-link">deleteMe</link>
+  </web-item>-->
+  <web-item name="aliasConfig" i18n-name-key="alias-config.name" key="alias-config" section="system.top.navigation.bar" weight="1000">
+    <description key="alias-config.description">The aliasConfig Plugin</description>
+    <label key="Alias config"></label>
+    <link linkId="alias-config-link">aliasConfig.jspa</link>
+  </web-item>
+</atlassian-plugin>
