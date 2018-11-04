@@ -1,21 +1,21 @@
 package com.sgc.services;
 
-import java.net.URI;
-
-import com.atlassian.sal.api.auth.LoginUriProvider;
-import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.atlassian.sal.api.user.UserManager;
-import com.atlassian.templaterenderer.TemplateRenderer;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.sgc.logic.PluginConfiguration;
+import com.atlassian.sal.api.auth.LoginUriProvider;
+import com.atlassian.sal.api.user.UserKey;
+import com.atlassian.sal.api.user.UserManager;
+import com.atlassian.templaterenderer.TemplateRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
+
+import javax.inject.Inject;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.inject.Inject;
 import java.io.IOException;
+import java.net.URI;
 
 @Scanned
 public class PluginServlet extends HttpServlet
@@ -26,33 +26,40 @@ public class PluginServlet extends HttpServlet
     private final LoginUriProvider loginUriProvider;
     @ComponentImport
     private final TemplateRenderer renderer;
-    @ComponentImport
-    private final PluginSettingsFactory pluginSettingsFactory;
+
+    final Logger logger = LoggerFactory.getLogger(PluginServlet.class);
 
     @Inject
-    public PluginServlet(UserManager userManager, LoginUriProvider loginUriProvider,
-                         TemplateRenderer renderer, PluginSettingsFactory pluginSettingsFactory) {
+    public PluginServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer) {
         this.userManager = userManager;
         this.loginUriProvider = loginUriProvider;
         this.renderer = renderer;
-        this.pluginSettingsFactory = pluginSettingsFactory;
-
-        PluginConfiguration.initPluginConfiguration(pluginSettingsFactory);
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
     {
-        String username = userManager.getRemoteUsername(request);
-        if (username == null || !userManager.isSystemAdmin(username))
+        UserKey userKey = userManager.getRemoteUser(request).getUserKey();
+        if (userKey == null || !userManager.isSystemAdmin(userKey))
         {
-            redirectToLogin(request, response);
+            try {
+                redirectToLogin(request, response);
+            }
+            catch (IOException ex) {
+                logger.warn("Redirecting error", ex);
+            }
             return;
         }
 
         response.setContentType("text/html;charset=utf-8");
-        renderer.render("aliasConfig.vm", response.getWriter());
-    }
+
+        try {
+            renderer.render("aliasConfigPage.vm", response.getWriter());
+        }
+        catch (IOException ex) {
+            logger.warn("Redirecting error", ex);
+        }
+     }
 
     private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException
     {

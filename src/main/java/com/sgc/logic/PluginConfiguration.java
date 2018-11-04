@@ -11,28 +11,29 @@ import java.util.List;
 
 public final class PluginConfiguration {
 
-    public static PluginSettings pluginSettings;
+    private static PluginSettings pluginSettings;
+    private static final String ALIASES = "aliases";
 
     private PluginConfiguration() { }
 
     public static void initPluginConfiguration(PluginSettingsFactory pluginSettingsFactory) {
         pluginSettings = pluginSettingsFactory.createGlobalSettings();
 
-        if (pluginSettings.get("aliases") == null) {
-            ArrayList<CommentAlias> aliases = new ArrayList<CommentAlias>();
+        if (pluginSettings.get(ALIASES) == null) {
+            List<CommentAlias> aliases = new ArrayList<>();
             aliases.add(new CommentAlias("@developers-example", "[~Ivan], [~Alex], [~Julia]", 1));
-            pluginSettings.put("aliases", arrayListToJson(aliases));
+            pluginSettings.put(ALIASES, arrayListToJson(aliases));
         }
     }
 
     public static String delAlias(String idString) {
         synchronized (pluginSettings) {
-            List<CommentAlias>aliases = jsonToArrayList((String)pluginSettings.get("aliases"));
+            List<CommentAlias>aliases = jsonToArrayList((String)pluginSettings.get(ALIASES));
             int id = Integer.parseInt(idString);
             for (int i = 0; i < aliases.size(); i++) {
                 if (aliases.get(i).getId() == id) {
                     aliases.remove(i);
-                    pluginSettings.put("aliases", arrayListToJson(aliases));
+                    pluginSettings.put(ALIASES, arrayListToJson(aliases));
                     return "ok";
                 }
             }
@@ -45,7 +46,7 @@ public final class PluginConfiguration {
             return "Error by creating alias. Check params.";
 
         synchronized (pluginSettings) {
-            List<CommentAlias> aliases = jsonToArrayList((String)pluginSettings.get("aliases"));
+            List<CommentAlias> aliases = jsonToArrayList((String)pluginSettings.get(ALIASES));
             for (int i = 0; i < aliases.size() ; i++) {
                 if (aliases.get(i).getAlias().equals(newAlias.getAlias())) {
                     return "Error. Alias '" + newAlias.getAlias() + "' already exists!";
@@ -61,7 +62,7 @@ public final class PluginConfiguration {
             newAlias.setId(++maxId);
             aliases.add(newAlias);
 
-            pluginSettings.put("aliases", arrayListToJson(aliases));
+            pluginSettings.put(ALIASES, arrayListToJson(aliases));
         }
 
         return String.valueOf(newAlias.getId());
@@ -69,13 +70,8 @@ public final class PluginConfiguration {
 
     public static List<CommentAlias> getAliases() {
 
-        List<CommentAlias> lst = jsonToArrayList((String)pluginSettings.get("aliases"));
-
-        for (int i = 0; i < lst.size(); i++) {
-            System.out.println(lst.get(i).toString());
-        }
         synchronized (pluginSettings) {
-             return jsonToArrayList((String)pluginSettings.get("aliases"));
+             return jsonToArrayList((String)pluginSettings.get(ALIASES));
         }
     }
 

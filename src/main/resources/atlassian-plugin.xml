@@ -14,7 +14,7 @@
     <web-resource key="CommentModificatorNew-resources" name="CommentModificatorNew Web Resources">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
     <resource type="download" name="CommentModificatorNew.css" location="/css/CommentModificatorNew.css"/>
-    <resource type="download" name="CommentModificatorNew.js" location="/js/CommentModificatorNew.js"/>
+    <resource type="download" name="ConfigPageScript.js" location="/js/ConfigPageScript.js"/>
     <resource type="download" name="images/" location="/images"/>
     <context>CommentModificatorNew</context>
     </web-resource>
@@ -38,7 +38,7 @@
     </rest>
 
     <web-resource key="CommentModificatorNew" name="CommentModificatorNew" >
-        <resource type="download" name="CommentModificatorNew.js" location="/js/CommentModificatorNew.js" />
+        <resource type="download" name="ConfigPageScript.js" location="/js/ConfigPageScript.js" />
         <context>com.aliasconfig</context>
     </web-resource>
 
