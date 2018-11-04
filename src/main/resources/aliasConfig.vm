@@ -1,0 +1,18 @@
+<html>
+<head>
+    <title>$i18n.getText("aliasconfig.label")</title>
+    <meta name="decorator" content="atl.admin" />
+</head>
+<body>
+    <table cellpadding="2" cellspacing="0" id="aliases">
+       <tr>
+            <th>Alias (@)</th><th>Value</th><th></th>
+        </tr>
+    </table>
+    $webResourceManager.requireResource("com.sgc.CommentModificatorNew:CommentModificatorNew")
+    <br>
+    Alias (@)<input type="text" id="newAlias">
+    Value<input type="text" id="newText">
+    <input type="button" value="Add new" onclick="addAlias()">
+</body>
+</html>
